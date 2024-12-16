@@ -10,7 +10,19 @@ const addTrip = async (req, res) => {
     }
 
     try {
-        const trip = new Trip({ destination, price });
+        const trip = new Trip({ 
+            title,
+            overview,
+            destination,
+            price,
+            images,      // Pass array of image URLs
+            itinerary,   // Pass array of itinerary objects
+            detail,
+            duration,
+            distance,
+            weather,
+            categories   // Pass array of categoriess
+         });
         await trip.save();
         res.status(201).json({ message: 'Trip added successfully!', trip });
     } catch (err) {
