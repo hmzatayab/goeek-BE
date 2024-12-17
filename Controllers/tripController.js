@@ -104,7 +104,9 @@ const searchListings = async (req, res) => {
 };
 
 
-module.exports = { addTrip, getTrips };
 module.exports = {
+    addTrip,
+    getTrips,
     searchListings
 };
+

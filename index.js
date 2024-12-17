@@ -4,6 +4,9 @@ const app = express();
 const connectDB = require('./config/db');
 const userRoutes = require('./Routes/userRoutes');
 const tripRoutes = require('./Routes/tripRoutes');
+const profileRoutes = require('./Routes/profileRoutes');
+
+
 
 
 // Middleware
@@ -15,6 +18,7 @@ connectDB();
 // Routes
 app.use('/api', userRoutes);  // User routes
 app.use('/api', tripRoutes);   // Trip routes
+app.use('/api/profile', profileRoutes); // Profile routes
 
 // Start Server
 const PORT = 3000;
