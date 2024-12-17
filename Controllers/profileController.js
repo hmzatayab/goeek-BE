@@ -74,8 +74,76 @@ const addAchievement = async (req, res) => {
     }
 };
 
+// Add Follower (Specific Logic)
+const addFollower = async (req, res) => {
+    try {
+        const userToFollow = await User.findById(req.params.id);
+        const currentUser = await User.findById(req.user);
+
+        if (!userToFollow || !currentUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (currentUser.followers.includes(userToFollow._id)) {
+            return res.status(400).json({ message: 'Already following this user' });
+        }
+
+        currentUser.followers.push(userToFollow._id);
+        await currentUser.save();
+
+        res.status(200).json({ success: true, message: 'User followed successfully!' });
+    } catch (error) {
+        console.error('Error adding follower:', error.message);
+        res.status(500).json({ success: false, message: 'Server error!' });
+    }
+};
+
+// Remove Follower
+const removeFollower = async (req, res) => {
+    try {
+        const userToUnfollow = await User.findById(req.params.id);
+        const currentUser = await User.findById(req.user);
+
+        if (!userToUnfollow || !currentUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        currentUser.followers = currentUser.followers.filter(
+            (id) => id.toString() !== userToUnfollow._id.toString()
+        );
+        await currentUser.save();
+
+        res.status(200).json({ success: true, message: 'User unfollowed successfully!' });
+    } catch (error) {
+        console.error('Error removing follower:', error.message);
+        res.status(500).json({ success: false, message: 'Server error!' });
+    }
+};
+
+// Get Followers List
+const getFollowers = async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.user).populate('followers', 'name email');
+
+        if (!currentUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            success: true,
+            followers: currentUser.followers,
+        });
+    } catch (error) {
+        console.error('Error fetching followers:', error.message);
+        res.status(500).json({ success: false, message: 'Server error!' });
+    }
+};
+
 module.exports = {
     updateProfile,
     toggleFollow,
-    addAchievement
+    addAchievement,
+    addFollower,
+    removeFollower,
+    getFollowers
 };
